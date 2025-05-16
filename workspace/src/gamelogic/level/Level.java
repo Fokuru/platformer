@@ -196,20 +196,27 @@ public class Level {
 	//#############################################################################################################
 	//Your code goes here! 
 	//Please make sure you read the rubric/directions carefully and implement the solution recursively!
+
+	// Pre: The col and row are really spots on map and map is not null. Fullness is between 0 and 3
+	// Post: Makes falling water from inital start point
 	private void water(int col, int row, Map map, int fullness) {
 		
 		if (fullness == 3) {
-		Water w = new Water (col, row, tileSize, tileset.getImage("Full_water"), this, fullness);
-		map.addTile(col, row, w);
+			// Make Full Block Water
+			Water w = new Water (col, row, tileSize, tileset.getImage("Full_water"), this, fullness);
+			map.addTile(col, row, w);
 		} if (fullness == 2) {
-		Water w = new Water (col, row, tileSize, tileset.getImage("Half_water"), this, fullness);
-		map.addTile(col, row, w);
+			// Make Half Block Water
+			Water w = new Water (col, row, tileSize, tileset.getImage("Half_water"), this, fullness);
+			map.addTile(col, row, w);
 		} if (fullness == 1) {
-		Water w = new Water (col, row, tileSize, tileset.getImage("Quarter_water"), this, fullness);
-		map.addTile(col, row, w);
+			// Make Quarter Block Water
+			Water w = new Water (col, row, tileSize, tileset.getImage("Quarter_water"), this, fullness);
+			map.addTile(col, row, w);
 		} if (fullness == 0) {
-		Water w = new Water (col, row, tileSize, tileset.getImage("Falling_water"), this, fullness);
-		map.addTile(col, row, w);
+			// Make Falling Water
+			Water w = new Water (col, row, tileSize, tileset.getImage("Falling_water"), this, fullness);
+			map.addTile(col, row, w);
 		}
 
             
@@ -217,10 +224,13 @@ public class Level {
 		//{
 				//check if we can go down
 			if (row+1 < map.getTiles()[col].length && !map.getTiles()[col][row+1].isSolid()){
+				// Check falling and no block
 				if (row+2 < map.getTiles()[col].length && !(map.getTiles()[col][row+1] instanceof Water) && !map.getTiles()[col][row+2].isSolid()){
 					water(col, row+1, map, 0);
+				// Check falling and end map (Beacause Debugging)
 				} else if (row+2 == map.getTiles()[col].length && !(map.getTiles()[col][row+1] instanceof Water) && !map.getTiles()[col][row+1].isSolid()){
 					water(col, row+1, map, 0);
+				// Check block beneath
 				} else if (row+2 < map.getTiles()[col].length && !(map.getTiles()[col][row+1] instanceof Water) && map.getTiles()[col][row+2].isSolid()){
 					water(col, row+1, map, 3);
 				} 
@@ -230,6 +240,7 @@ public class Level {
 				//if we can’t go down go left and right.
 			//right
 			if(row+1 < map.getTiles()[col].length && col+1 < map.getTiles().length && !(map.getTiles()[col+1][row] instanceof Water) && !map.getTiles()[col+1][row].isSolid()) {
+				// Check type so go down
 				if (fullness > 1) {
 					water(col+1, row, map, fullness-1);
 				} else {
@@ -239,6 +250,7 @@ public class Level {
 			}
 			//left
 			if(row+1 < map.getTiles()[col].length && col-1 >= 0 && !(map.getTiles()[col-1][row] instanceof Water) && !map.getTiles()[col-1][row].isSolid()) {
+				//  Check type so go down
 				if (fullness > 1) {
 					water(col-1, row, map, fullness-1);
 				} else {
