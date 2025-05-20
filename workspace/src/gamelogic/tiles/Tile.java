@@ -33,6 +33,11 @@ public class Tile{
 		if(hitbox != null) hitbox.draw(g);		
 	}
 	
+	// Pre: newIm != void
+	// Post: Sets new image 
+	public void setImage(BufferedImage newIm){
+		image = newIm;
+	}
 	
 	
 	//------------------------------------Getters
