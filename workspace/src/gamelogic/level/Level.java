@@ -170,7 +170,7 @@ public class Level {
 					if(flowers.get(i).getType() == 1)
 						water(flowers.get(i).getCol(), flowers.get(i).getRow(), map, 3);
 					else
-						addGas(flowers.get(i).getCol(), flowers.get(i).getRow(), map, 5, new ArrayList<Gas>());
+						addGas(flowers.get(i).getCol(), flowers.get(i).getRow(), map, 20, new ArrayList<Gas>());
 					flowers.remove(i);
 					i--;
 				}
@@ -263,6 +263,8 @@ public class Level {
 
 	}
 
+	// Pre: col and row are both on the map, and all is not null.
+	// Post: Makes a gass cloud with as many gasses placed as numSquaresToFill, unless in smaller space in which case fill as much as possible.
 	private void addGas(int col, int row, Map map, int numSquaresToFill, ArrayList<Gas> placedThisRound) {
 		Gas g = new Gas (col, row, tileSize, tileset.getImage("GasOne"), this, 0);
 		map.addTile(col,row,g);
@@ -270,16 +272,21 @@ public class Level {
 		numSquaresToFill--;
 		while(placedThisRound.size() > 0 && numSquaresToFill > 0) {
 			//set row and col variables based on what's at the front of placedThisRound
-			for (int i = 1; i >= -1; i--) {
-				for (int k = 1; k <= -1; k--){
-					if(!map.getTiles()[col+i][row+k].isSolid() && !(map.getTiles()[col+i][row+k] instanceof Gas)){
+			row = placedThisRound.get(0).getRow();
+			col = placedThisRound.get(0).getCol();
+			
+			for (int k = -1; k <= 1; k++){
+				for (int i = 0; i >= -1; i-=2) {
+					if(!map.getTiles()[col+i][row+k].isSolid() && !(map.getTiles()[col+i][row+k] instanceof Gas) && numSquaresToFill > 0 && !(map.getTiles()[col+i][row+k] instanceof Flag)){
 						Gas g2 = new Gas (col+i, row+k, tileSize, tileset.getImage("GasOne"), this, 0);
 						map.addTile(col+i,row+k,g2);
 						placedThisRound.add(g2);
 						numSquaresToFill--;
-						System.out.println("k");
 					}
-				}
+					if (i==0){
+						i+=3;
+					}
+				}	
 			}
 			placedThisRound.remove(0);
 		}	
