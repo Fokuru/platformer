@@ -277,7 +277,7 @@ public class Level {
 			
 			for (int k = -1; k <= 1; k++){
 				for (int i = 0; i >= -1; i-=2) {
-					if(!map.getTiles()[col+i][row+k].isSolid() && !(map.getTiles()[col+i][row+k] instanceof Gas) && numSquaresToFill > 0 && !(map.getTiles()[col+i][row+k] instanceof Flag)){
+					if(((width > col+i && 0 <= col+i) && (height > row+k && 0 <= row+k)) && !map.getTiles()[col+i][row+k].isSolid() && !(map.getTiles()[col+i][row+k] instanceof Gas) && numSquaresToFill > 0 && !(map.getTiles()[col+i][row+k] instanceof Flag)){
 						Gas g2 = new Gas (col+i, row+k, tileSize, tileset.getImage("GasOne"), this, 0);
 						map.addTile(col+i,row+k,g2);
 						placedThisRound.add(g2);
