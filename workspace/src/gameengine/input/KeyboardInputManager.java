@@ -44,4 +44,5 @@ public final class KeyboardInputManager implements KeyListener {
 		int keyCode = keyEvent.getKeyCode();
 		if(keyCode >= 0 && keyCode < keys.length) keys[keyCode] = false;
 	}	
+	
 }

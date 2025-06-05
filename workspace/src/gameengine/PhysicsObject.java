@@ -12,7 +12,7 @@ public class PhysicsObject extends GameObject{
 	public static final int LEF = 2;
 	public static final int RIG = 3;
 
-	protected Vector2D movementVector;
+	public Vector2D movementVector;
 
 	protected RectHitbox hitbox;
 	

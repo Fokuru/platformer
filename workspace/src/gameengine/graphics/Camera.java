@@ -16,6 +16,7 @@ public class Camera {
 	
 	private int width;
 	private int height;
+	private int smaller = 0;
 	
 	private float velocityX = 1.6f; 
 	private float velocityY = 1.6f;
@@ -96,7 +97,7 @@ public class Camera {
 	}
 	
 	public boolean isVisibleOnCamera(float x, float y, int width, int height) {
-		if(x + width > position.x && x < position.x + this.width && y + height > position.y && y < position.y + this.height) return true;
+		if((x - smaller + width) > position.x && (x + smaller) < position.x + this.width && (y - smaller + height) > position.y && (y + smaller) < position.y + this.height) return true;
 		return false;
 	}
 	
@@ -115,5 +116,15 @@ public class Camera {
 	
 	public float getY() {
 		return position.y;
+	}
+
+	// Pre: yesNo is a boolean that is not equal to null.
+	// Post: Shrinks or grows camera depending on yesNo.
+	public void smallerCam(boolean yesNo) {
+		if (yesNo) {
+			smaller = 200;
+		} else {
+			smaller = 0;
+		}
 	}
 }

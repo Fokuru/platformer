@@ -35,6 +35,8 @@ public class Level {
 
 	private ArrayList<Enemy> enemiesList = new ArrayList<>();
 	private ArrayList<Flower> flowers = new ArrayList<>();
+	private ArrayList<Gas> gasList = new ArrayList<>();
+	private ArrayList<Water> waterList = new ArrayList<>();
 
 	private List<PlayerDieListener> dieListeners = new ArrayList<>();
 	private List<PlayerWinListener> winListeners = new ArrayList<>();
@@ -140,6 +142,8 @@ public class Level {
 		active = false;
 		playerDead = true;
 		throwPlayerDieEvent();
+		gasList.clear();
+		waterList.clear();
 	}
 
 	public void onPlayerWin() {
@@ -152,7 +156,7 @@ public class Level {
 		if (active) {
 			// Update the player
 			player.update(tslf);
-
+			
 			// Player death
 			if (map.getFullHeight() + 100 < player.getY())
 				onPlayerDeath();
@@ -175,6 +179,26 @@ public class Level {
 					i--;
 				}
 			}
+
+			// Check if touching gas and then switch left and right inputs if touching.
+			boolean switchNowG = false;
+			for (int i = 0; i < gasList.size(); i++) {
+				if (gasList.get(i).getHitbox().isIntersecting(player.getHitbox())) {
+					switchNowG = true;
+				} else {
+				}
+			}
+			player.switchMovement(switchNowG);
+
+			// Check if touching water and then switch camera size as needed if touching.
+			boolean switchNowW = false;
+			for (int i = 0; i < waterList.size(); i++) {
+				if (waterList.get(i).getHitbox().isIntersecting(player.getHitbox())) {
+					switchNowW = true;
+				} else {
+				}
+			}
+			camera.smallerCam(switchNowW);
 
 			// Update the enemies
 			for (int i = 0; i < enemies.length; i++) {
@@ -205,18 +229,22 @@ public class Level {
 			// Make Full Block Water
 			Water w = new Water (col, row, tileSize, tileset.getImage("Full_water"), this, fullness);
 			map.addTile(col, row, w);
+			waterList.add(w);
 		} if (fullness == 2) {
 			// Make Half Block Water
 			Water w = new Water (col, row, tileSize, tileset.getImage("Half_water"), this, fullness);
 			map.addTile(col, row, w);
+			waterList.add(w);
 		} if (fullness == 1) {
 			// Make Quarter Block Water
 			Water w = new Water (col, row, tileSize, tileset.getImage("Quarter_water"), this, fullness);
 			map.addTile(col, row, w);
+			waterList.add(w);
 		} if (fullness == 0) {
 			// Make Falling Water
 			Water w = new Water (col, row, tileSize, tileset.getImage("Falling_water"), this, fullness);
 			map.addTile(col, row, w);
+			waterList.add(w);
 		}
 
             
@@ -270,6 +298,7 @@ public class Level {
 		map.addTile(col,row,g);
 		placedThisRound.add(g);
 		numSquaresToFill--;
+		gasList.add(g);
 		while(placedThisRound.size() > 0 && numSquaresToFill > 0) {
 			//set row and col variables based on what's at the front of placedThisRound
 			row = placedThisRound.get(0).getRow();
@@ -282,6 +311,7 @@ public class Level {
 						map.addTile(col+i,row+k,g2);
 						placedThisRound.add(g2);
 						numSquaresToFill--;
+						gasList.add(g2);
 					}
 					if (i==0){
 						i+=3;
@@ -391,4 +421,5 @@ public class Level {
 	public Player getPlayer() {
 		return player;
 	}
+	
 }

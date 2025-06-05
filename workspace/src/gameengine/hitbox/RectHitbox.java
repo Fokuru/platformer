@@ -77,4 +77,10 @@ public class RectHitbox extends Hitbox{
 	public int getHeight() {
 		return height;
 	}
+
+	// Pre: newPos is a vector inside the level and is not null.
+	// Post: Sets new poition based on newPos.
+	public void setPosition(Vector2D newPos){
+		position = newPos;
+	}
 }

@@ -24,6 +24,7 @@ public class GameObject {
 		this.height = height;
 	}
 	
+
 	public void update (float tslf) {};
 	
 	public void draw (Graphics g) {};
@@ -44,5 +45,10 @@ public class GameObject {
 	
 	public int getHeight() {
 		return height;
+	}
+	// Pre: newPos is a vector inside the level and is not null.
+	// Post: Sets new poition based on newPos.
+	public void setPosition(Vector2D newPos){
+		position = newPos;
 	}
 }

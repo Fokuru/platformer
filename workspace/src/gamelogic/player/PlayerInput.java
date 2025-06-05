@@ -34,4 +34,11 @@ class PlayerInput {
 	public static boolean isRightKeyDown() {
 		return KeyboardInputManager.isKeyDown(KeyEvent.VK_D) || KeyboardInputManager.isKeyDown(KeyEvent.VK_RIGHT);
 	}
+	/**
+	 * 
+	 * @return true if the Q-key is down
+	 */
+	public static boolean isQKeyDown() {
+		return KeyboardInputManager.isKeyDown(KeyEvent.VK_Q);
+	}
 }
