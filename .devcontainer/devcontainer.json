@@ -1,16 +1,34 @@
 {
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
+  "name": "Java Dev",
+  "image": "mcr.microsoft.com/devcontainers/base:bookworm",
+
   "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "21",
+      "installMaven": "true"
+    },
     "ghcr.io/devcontainers/features/desktop-lite:1": {
       "password": "vscode",
       "webPort": "6080",
       "vncPort": "5901"
     }
   },
+
+  "forwardPorts": [6080],
+  "portsAttributes": {
+    "6080": {
+      "label": "Desktop Lite"
+    }
+  },
+
   "customizations": {
     "vscode": {
+      "settings": {
+        "java.server.launchMode": "Standard",
+        "github.copilot.inlineSuggest.enable": false,
+        "github.copilot.enable": false,
+        "chat.disableAIFeatures": true
+      },
       "extensions": [
         "vscjava.vscode-java-pack"
       ]
