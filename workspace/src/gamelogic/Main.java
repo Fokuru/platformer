@@ -10,6 +10,7 @@ import gameengine.GameBase;
 import gameengine.graphics.MyWindow;
 import gameengine.input.KeyboardInputManager;
 import gameengine.loaders.LeveldataLoader;
+import gamelogic.clientHandling.Server;
 import gamelogic.level.Level;
 import gamelogic.level.LevelData;
 import gamelogic.level.PlayerDieListener;
@@ -36,6 +37,7 @@ public class Main extends GameBase implements PlayerDieListener, PlayerWinListen
 	public static void main(String[] args) {
 		Main main = new Main();
 		main.start("Eden Jump", SCREEN_WIDTH, SCREEN_HEIGHT);
+		Server start = new Server();
 	}
 
 	@Override

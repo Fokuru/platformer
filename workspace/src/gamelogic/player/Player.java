@@ -8,6 +8,7 @@ import gameengine.graphics.MyGraphics;
 import gameengine.hitbox.RectHitbox;
 import gameengine.maths.Vector2D;
 import gamelogic.Main;
+import gamelogic.clientHandling.Information;
 import gamelogic.level.Level;
 import gamelogic.tiles.Tile;
 
@@ -15,6 +16,7 @@ public class Player extends PhysicsObject{
 	public float walkSpeed = 400;
 	public float jumpPower = 1350;
 	public long started = System.currentTimeMillis();
+	public Information myInfo;
 
 	private Level holder;
 	private boolean isJumping = false;
@@ -26,6 +28,7 @@ public class Player extends PhysicsObject{
 		int offset =(int)(level.getLevelData().getTileSize()*0.1); //hitbox is offset by 10% of the player size.
 		this.hitbox = new RectHitbox(this, offset,offset, width -offset, height - offset);
 		holder = level;
+		myInfo = new Information((int)x, (int)y, width-offset, height-offset);
 	}
 
 	@Override
@@ -53,32 +56,32 @@ public class Player extends PhysicsObject{
 		}
 
 		// Checks if the Q key is down and then teleports if it has been more than 1 second sense last teleport.
-		if(PlayerInput.isQKeyDown()) {
+		// if(PlayerInput.isQKeyDown()) {
 			
-			if (System.currentTimeMillis()-started >= 1000){
-				int h = holder.getLevelData().getMapdata().getHeight();
-				int w = holder.getLevelData().getMapdata().getWidth();
-				boolean moved = false;
-				while (moved == false){
-					int col = (int) (Math.random() * (h));
-					int row = (int) (Math.random() * (w));
-					if (row+1 < holder.getMap().getTiles()[col].length && 
-							col < holder.getMap().getTiles().length && 
-							!holder.getMap().getTiles()[col][row].isSolid() && 
-							holder.getMap().getTiles()[col][row+1].isSolid()){
-						Vector2D newVec = new Vector2D((col*holder.getLevelData().getMapdata().getTileSize()), row*holder.getLevelData().getMapdata().getTileSize());
-						this.setPosition(newVec);
-						int offset =(int)(holder.getLevelData().getTileSize()*0.1);
-						this.hitbox = new RectHitbox(this, offset, offset, width -offset, height - offset);
-						// hitbox.setPosition(newVec);
-						movementVector = new Vector2D(0, 0);
-						started = System.currentTimeMillis();
-						this.continueThis();
-						moved = true;
-					}
-				}
-			}
-		}
+		// 	if (System.currentTimeMillis()-started >= 1000){
+		// 		int h = holder.getLevelData().getMapdata().getHeight();
+		// 		int w = holder.getLevelData().getMapdata().getWidth();
+		// 		boolean moved = false;
+		// 		while (moved == false){
+		// 			int col = (int) (Math.random() * (h));
+		// 			int row = (int) (Math.random() * (w));
+		// 			if (row+1 < holder.getMap().getTiles()[col].length && 
+		// 					col < holder.getMap().getTiles().length && 
+		// 					!holder.getMap().getTiles()[col][row].isSolid() && 
+		// 					holder.getMap().getTiles()[col][row+1].isSolid()){
+		// 				Vector2D newVec = new Vector2D((col*holder.getLevelData().getMapdata().getTileSize()), row*holder.getLevelData().getMapdata().getTileSize());
+		// 				this.setPosition(newVec);
+		// 				int offset =(int)(holder.getLevelData().getTileSize()*0.1);
+		// 				this.hitbox = new RectHitbox(this, offset, offset, width -offset, height - offset);
+		// 				// hitbox.setPosition(newVec);
+		// 				movementVector = new Vector2D(0, 0);
+		// 				started = System.currentTimeMillis();
+		// 				this.continueThis();
+		// 				moved = true;
+		// 			}
+		// 		}
+		// 	}
+		// }
 
 		
 
