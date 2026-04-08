@@ -87,6 +87,7 @@ public class Player extends PhysicsObject{
 
 		isJumping = true;
 		if(collisionMatrix[BOT] != null) isJumping = false;
+		myInfo.changeInfo((int)getX(), (int)getY(), (int)hitbox.getX(), (int)hitbox.getY());
 	}
 
 	public void switchMovement(boolean toWhat){

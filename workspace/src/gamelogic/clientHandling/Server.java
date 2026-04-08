@@ -3,29 +3,26 @@ package gamelogic.clientHandling;
 import java.net.*;
 import java.io.*;
 import java.util.*;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.util.List;
+import java.awt.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import gameengine.*;
 
 public class Server {
     private static int CURRENT_CONNECTIONS = 0;
     public static final int LISTENING_PORT = 9876;
-    private List<ConnectionHandler> connections = Collections.synchronizedList(new ArrayList<>());
-    // Doesn't work currently:
-    // InetAddress host = InetAddress.getLocalHost();
-    // final Socket socket = new Socket(host, LISTENING_PORT);
-    // final ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-    // final ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-    AtomicBoolean running = new AtomicBoolean(true);
+    private List<ConnectionHandler> connections = Collections.synchronizedList(new ArrayList<>());{
+    try {
+            InetAddress host = InetAddress.getLocalHost();
+            final Socket socket = new Socket(host, LISTENING_PORT);
+            final ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+            final ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+            AtomicBoolean running = new AtomicBoolean(true);
+        } 
+        catch (Exception e) {
+            System.out.println("Haha");
+        }
+    }
 
     public Server() {
         ServerSocket listener;  // Listens for incoming connections.
