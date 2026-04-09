@@ -1,7 +1,6 @@
 package gamelogic.level;
 
 import java.awt.Graphics;
-import java.util.ArrayList;
 import java.util.List;
 
 import gameengine.PhysicsObject;
@@ -17,7 +16,16 @@ import gamelogic.tiles.Flag;
 import gamelogic.tiles.Flower;
 import gamelogic.tiles.SolidTile;
 import gamelogic.tiles.Spikes;
-import gamelogic.tiles.Tile;
+import gamelogic.key.Key;
+import gamelogic.*;
+import java.net.*;
+import java.io.*;
+import java.util.*;
+import java.util.List;
+import java.awt.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import gameengine.*;
+import gamelogic.clientHandling.*;
 
 public class Level {
 
@@ -30,9 +38,8 @@ public class Level {
 	private boolean active;
 	private boolean playerDead;
 	private boolean playerWin;
-
 	private ArrayList<Enemy> enemiesList = new ArrayList<>();
-	private ArrayList<Flower> flowers = new ArrayList<>();
+	private ArrayList<Key> keys = new ArrayList<>();
 
 	private List<PlayerDieListener> dieListeners = new ArrayList<>();
 	private List<PlayerWinListener> winListeners = new ArrayList<>();
@@ -44,6 +51,21 @@ public class Level {
 	private Tileset tileset;
 	public static float GRAVITY = 70;
 
+	private static int CURRENT_CONNECTIONS = 0;
+    public static final int LISTENING_PORT = 9876;
+    private List<ConnectionHandler> connections = Collections.synchronizedList(new ArrayList<>());{
+    try {
+            InetAddress host = InetAddress.getLocalHost();
+            final Socket socket = new Socket(host, LISTENING_PORT);
+            final ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+            final ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+            AtomicBoolean running = new AtomicBoolean(true);
+        } 
+        catch (Exception e) {
+            System.out.println("Haha");
+        }
+    }
+
 	public Level(LevelData leveldata) {
 		this.leveldata = leveldata;
 		mapdata = leveldata.getMapdata();
@@ -51,6 +73,33 @@ public class Level {
 		height = mapdata.getHeight();
 		tileSize = mapdata.getTileSize();
 		restartLevel();
+
+		ServerSocket listener;  // Listens for incoming connections.
+        Socket connection;      // For communication with the connecting program.
+        
+        /* Accept and process connections forever, or until some error occurs. */
+
+        // pre: none
+        // post: the server is running, and is accepting and processing connection requests until some error occurs.  
+        // If an error occurs, a message is printed and the server is shut down.
+        try {
+            listener = new ServerSocket(LISTENING_PORT);
+            System.out.println("Listening on port " + LISTENING_PORT);
+            while (true) {
+                  // Accept next connection request and handle it.
+                connection = listener.accept();
+                System.out.println("Connection received from " + connection.getInetAddress());
+                ConnectionHandler handler = new ConnectionHandler(connection, CURRENT_CONNECTIONS);
+                connections.add(handler);
+                CURRENT_CONNECTIONS++;
+                handler.start();
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Sorry, the server has shut down.");
+            System.out.println("Error:  " + e);
+            return;
+        }
 	}
 
 	public LevelData getLevelData(){
@@ -69,45 +118,47 @@ public class Level {
 				tileset = GameResources.tileset;
 
 				tiles[x][y] = new Tile(xPosition, yPosition, tileSize, null, false, this);
-				if (values[x][y] == 0)
+				if (values[x][y] == 0){
 					tiles[x][y] = new Tile(xPosition, yPosition, tileSize, null, false, this); // Air
-				else if (values[x][y] == 1)
+				}else if (values[x][y] == 1){
 					tiles[x][y] = new SolidTile(xPosition, yPosition, tileSize, tileset.getImage("Solid"), this);
 
-				else if (values[x][y] == 2)
+				}else if (values[x][y] == 2){
 					tiles[x][y] = new Spikes(xPosition, yPosition, tileSize, Spikes.HORIZONTAL_DOWNWARDS, this);
-				else if (values[x][y] == 3)
+				}else if (values[x][y] == 3){
 					tiles[x][y] = new Spikes(xPosition, yPosition, tileSize, Spikes.HORIZONTAL_UPWARDS, this);
-				else if (values[x][y] == 4)
+			}else if (values[x][y] == 4){
 					tiles[x][y] = new Spikes(xPosition, yPosition, tileSize, Spikes.VERTICAL_LEFTWARDS, this);
-				else if (values[x][y] == 5)
+		}else if (values[x][y] == 5){
 					tiles[x][y] = new Spikes(xPosition, yPosition, tileSize, Spikes.VERTICAL_RIGHTWARDS, this);
-				else if (values[x][y] == 6)
+	}else if (values[x][y] == 6){
 					tiles[x][y] = new SolidTile(xPosition, yPosition, tileSize, tileset.getImage("Dirt"), this);
-				else if (values[x][y] == 7)
+}else if (values[x][y] == 7){
 					tiles[x][y] = new SolidTile(xPosition, yPosition, tileSize, tileset.getImage("Grass"), this);
-				else if (values[x][y] == 8)
+				}else if (values[x][y] == 8){
 					enemiesList.add(new Enemy(xPosition*tileSize, yPosition*tileSize, this)); // TODO: objects vs tiles
-				else if (values[x][y] == 9)
+				}else if (values[x][y] == 9){
 					tiles[x][y] = new Flag(xPosition, yPosition, tileSize, tileset.getImage("Flag"), this);
-				else if (values[x][y] == 10) {
-					tiles[x][y] = new Flower(xPosition, yPosition, tileSize, tileset.getImage("Flower1"), this, 1);
-					flowers.add((Flower) tiles[x][y]);
-				} else if (values[x][y] == 11) {
-					tiles[x][y] = new Flower(xPosition, yPosition, tileSize, tileset.getImage("Flower2"), this, 2);
-					flowers.add((Flower) tiles[x][y]);
-				} else if (values[x][y] == 12)
+				}else if (values[x][y] == 10) {
+					tiles[x][y] = Key(xPosition, yPosition, null);
+					keys.add((Key) tiles[x][y]);
+				} else if (values[x][y] == 12){
 					tiles[x][y] = new SolidTile(xPosition, yPosition, tileSize, tileset.getImage("Solid_down"), this);
-				else if (values[x][y] == 13)
+				}else if (values[x][y] == 13){
 					tiles[x][y] = new SolidTile(xPosition, yPosition, tileSize, tileset.getImage("Solid_up"), this);
-				else if (values[x][y] == 14)
+				}else if (values[x][y] == 14){
 					tiles[x][y] = new SolidTile(xPosition, yPosition, tileSize, tileset.getImage("Solid_middle"), this);
 			}
 
 		}
+
+		key = new Key[keys.size()];
 		enemies = new Enemy[enemiesList.size()];
 		map = new Map(width, height, tileSize, tiles);
 		camera = new Camera(Main.SCREEN_WIDTH, Main.SCREEN_HEIGHT, 0, map.getFullWidth(), map.getFullHeight());
+		for (int i = 0; i < keysList.size(); i++) {
+			key[i] = new Key(keys.get(i).getX(), keys.get(i).getY(), this);
+		}
 		for (int i = 0; i < enemiesList.size(); i++) {
 			enemies[i] = new Enemy(enemiesList.get(i).getX(), enemiesList.get(i).getY(), this);
 		}
@@ -148,6 +199,14 @@ public class Level {
 				onPlayerDeath();
 			if (player.getCollisionMatrix()[PhysicsObject.RIG] instanceof Spikes)
 				onPlayerDeath();
+			
+			for (int i = 0; i < key.length; i++) {
+				key[i].update(tslf);
+				if (player.getHitbox().isIntersecting(key[i].getHitbox())&&player.getX()<key[i].getX()) {
+					player.hasKey=true;
+					key[i].pickedUp=true;
+				}
+			}
 
 			// Update the enemies
 			for (int i = 0; i < enemies.length; i++) {
@@ -241,5 +300,62 @@ public class Level {
 	public Player getPlayer() {
 		return player;
 	}
+
+	private class ConnectionHandler extends Thread {
+        Socket client;
+        ObjectOutputStream oos;
+        ObjectInputStream ois;
+        int number;
+
+        ConnectionHandler(Socket socket, int newNum) {
+            client = socket;
+            number = newNum;
+        }
+        
+        public void run() {
+            String clientAddress = "User " + number;
+            try {
+                oos = new ObjectOutputStream(client.getOutputStream());
+                ois = new ObjectInputStream(client.getInputStream());
+                
+                while (true) {
+                    Information message = (Information) ois.readObject();
+                    System.out.println("Message Received from " + clientAddress);
+                    
+                    // Broadcast the message to all other clients
+                    synchronized (connections) {
+                        for (ConnectionHandler handler : connections) {
+                            if (handler != this) {
+                                try {
+                                    handler.oos.writeObject(clientAddress + ": " + message);
+                                    System.out.println("Hehe");
+                                    handler.oos.flush();
+                                    
+                                } catch (IOException e) {
+                                    System.out.println("Error sending to client: " + e);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e) {
+                System.out.println("Error on connection with: " + clientAddress + ": " + e);
+            } finally {
+                // Remove this handler from the list when connection closes
+                synchronized (connections) {
+                    connections.remove(this);
+                }
+                try {
+                    client.close();
+                } catch (IOException e) {
+                    // Ignore
+                }
+            }
+        }
+    }
+
+
+
 	
 }

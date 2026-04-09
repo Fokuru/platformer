@@ -73,14 +73,14 @@ public class Server {
         }
         
         public void run() {
-            String clientAddress = "User " + number + " ";
+            String clientAddress = "User " + number;
             try {
                 oos = new ObjectOutputStream(client.getOutputStream());
                 ois = new ObjectInputStream(client.getInputStream());
                 
                 while (true) {
-                    String message = (String) ois.readObject();
-                    System.out.println("Message Received from " + clientAddress + ": " + message);
+                    Information message = (Information) ois.readObject();
+                    System.out.println("Message Received from " + clientAddress);
                     
                     // Broadcast the message to all other clients
                     synchronized (connections) {

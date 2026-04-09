@@ -17,6 +17,7 @@ public class Player extends PhysicsObject{
 	public float jumpPower = 1350;
 	public long started = System.currentTimeMillis();
 	public Information myInfo;
+	private boolean hasKey = false;
 
 	private Level holder;
 	private boolean isJumping = false;
@@ -116,6 +117,10 @@ public class Player extends PhysicsObject{
 	public void continueThis(){
 		System.out.println("S  " + this.getX() + "  " + this.getY());
 		System.out.println("H  " + hitbox.getX() + "  " + hitbox.getY());
+	}
+
+	public boolean hasKey() {
+		return hasKey;
 	}
 
 	
