@@ -39,16 +39,14 @@ public class Key extends PhysicsObject {
 
 
     public void update(float tslf) {
-		super.update(tslf);
-		
-		if(level.getPlayer().hasKey()&&pickedUp) {
-			position.x=level.getPlayer().getX()-30;
-			position.y=level.getPlayer().getY()-100;
+		if(this.level.getPlayer().getKey()!=null&&pickedUp) {
+			position.x=this.level.getPlayer().getX()-30;
+			position.y=this.level.getPlayer().getY()-100;
 		}
 	}
 	@Override
 	public void draw(Graphics g) {
-		g.drawImage(image, (int)position.x, (int)position.y, width,height, null);
+		g.drawImage(this.image, (int)position.x, (int)position.y, width,height, null);
 		
 		
 		hitbox.draw(g);

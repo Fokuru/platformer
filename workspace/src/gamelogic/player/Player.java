@@ -11,13 +11,14 @@ import gamelogic.Main;
 import gamelogic.clientHandling.Information;
 import gamelogic.level.Level;
 import gamelogic.tiles.Tile;
+import gamelogic.key.Key;
 
 public class Player extends PhysicsObject{
 	public float walkSpeed = 400;
 	public float jumpPower = 1350;
 	public long started = System.currentTimeMillis();
 	public Information myInfo;
-	private boolean hasKey = false;
+	public Key hasKey = null;
 
 	private Level holder;
 	private boolean isJumping = false;
@@ -119,7 +120,7 @@ public class Player extends PhysicsObject{
 		System.out.println("H  " + hitbox.getX() + "  " + hitbox.getY());
 	}
 
-	public boolean hasKey() {
+	public Key getKey() {
 		return hasKey;
 	}
 
