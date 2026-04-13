@@ -72,7 +72,7 @@ public class Main extends GameBase implements PlayerDieListener, PlayerWinListen
                   // Accept next connection request and handle it.
                 connection = listener.accept();
                 System.out.println("Connection received from " + connection.getInetAddress());
-                ConnectionHandler handler = new ConnectionHandler(connection, CURRENT_CONNECTIONS);
+                ConnectionHandler handler = main.new ConnectionHandler(connection, CURRENT_CONNECTIONS);
                 try {
 					main.connections.add(handler);
 				} catch (Exception e) {
@@ -174,7 +174,7 @@ public class Main extends GameBase implements PlayerDieListener, PlayerWinListen
 				currentLevel.get(i).addPlayerDieListener(this);
 				currentLevel.get(i).addPlayerWinListener(this);
 			}
-			levelCompleteBar = new LevelCompleteBar(100, 10, SCREEN_WIDTH - 200, 10, currentLevel.getPlayer());
+			levelCompleteBar = new LevelCompleteBar(100, 10, SCREEN_WIDTH - 200, 10, currentLevel.get(0).getPlayer());
 		}
 	}
 

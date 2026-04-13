@@ -12,7 +12,7 @@ import gameengine.input.KeyboardInputManager;
  * @author Paul
  *
  */
-class PlayerInput {
+public class PlayerInput {
 	/**
 	 * 
 	 * @return true if the walk-up-key is down
